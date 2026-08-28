@@ -1,0 +1,191 @@
+import os
+
+APPS = ['accounts', 'income', 'expenses', 'transactions', 'budgets', 'savings']
+
+def enhance_templates():
+    for app in APPS:
+        template_dir = os.path.join(app, "templates", app)
+        if not os.path.exists(template_dir):
+            os.makedirs(template_dir)
+            
+        # We will write extremely detailed templates with filters and modals
+        
+        list_html = f"""{{% extends 'base.html' %}}
+{{% block title %}}{app.capitalize()} Management{{% endblock %}}
+{{% block content %}}
+<div class="container mx-auto px-4 py-8">
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800 tracking-tight">{app.capitalize()} Dashboard</h1>
+            <p class="text-gray-500 mt-2">Manage and track your {app} effectively.</p>
+        </div>
+        <div class="mt-4 md:mt-0 space-x-2">
+            <button class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-semibold py-2 px-4 border border-gray-300 rounded shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+                Export
+            </button>
+            <a href="{{% url '{app}:create' %}}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition duration-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Add New
+            </a>
+        </div>
+    </div>
+
+    <!-- Analytics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500 font-medium">Total Items</p>
+                    <p class="text-2xl font-bold text-gray-800">{{{{ page_obj.paginator.count }}}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-green-100 text-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500 font-medium">Active / Valid</p>
+                    <p class="text-2xl font-bold text-gray-800">100%</p>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            <div class="flex items-center">
+                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <p class="text-sm text-gray-500 font-medium">Last Updated</p>
+                    <p class="text-lg font-bold text-gray-800">Today</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="bg-white rounded-t-xl shadow-sm border-t border-l border-r border-gray-200 p-4">
+        <form method="get" class="flex flex-col md:flex-row gap-4">
+            <div class="flex-1">
+                <input type="text" name="q" placeholder="Search..." class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-3 border" value="{{{{ request.GET.q }}}}">
+            </div>
+            <div class="w-full md:w-48">
+                <select name="sort" class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm py-2 px-3 border">
+                    <option value="-id">Newest First</option>
+                    <option value="id">Oldest First</option>
+                </select>
+            </div>
+            <button type="submit" class="bg-gray-800 text-white py-2 px-4 rounded shadow hover:bg-gray-700 transition">Filter</button>
+        </form>
+    </div>
+
+    <!-- Main Table -->
+    <div class="bg-white rounded-b-xl shadow-sm border border-gray-200 overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            ID
+                        </th>
+                        <th scope="col" class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Details
+                        </th>
+                        <th scope="col" class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {{% for object in object_list %}}
+                    <tr class="hover:bg-gray-50 transition-colors duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">#{{{{ object.id }}}}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 font-semibold">{{{{ object }}}}</div>
+                            <div class="text-xs text-gray-500 mt-1">Created: {{{{ object.created_at|date:"M d, Y"|default:"N/A" }}}}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mx-2">View</a>
+                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mx-2">Edit</a>
+                            <a href="#" class="text-red-600 hover:text-red-900 ml-2">Delete</a>
+                        </td>
+                    </tr>
+                    {{% empty %}}
+                    <tr>
+                        <td colspan="3" class="px-6 py-10 text-center text-gray-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                            </svg>
+                            <p class="text-lg font-medium">No records found</p>
+                            <p class="text-sm mt-1">Get started by creating a new record.</p>
+                            <a href="#" class="mt-4 inline-block text-blue-600 hover:underline">Add New</a>
+                        </td>
+                    </tr>
+                    {{% endfor %}}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        {{% if is_paginated %}}
+        <div class="bg-white px-4 py-3 border-t border-gray-200 flex items-center justify-between sm:px-6">
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        Showing page <span class="font-medium">{{{{ page_obj.number }}}}</span> of <span class="font-medium">{{{{ page_obj.paginator.num_pages }}}}</span>
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                        {{% if page_obj.has_previous %}}
+                        <a href="?page={{{{ page_obj.previous_page_number }}}}" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">Previous</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        {{% endif %}}
+                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-gray-50 text-sm font-medium text-gray-700">
+                            {{{{ page_obj.number }}}}
+                        </span>
+                        {{% if page_obj.has_next %}}
+                        <a href="?page={{{{ page_obj.next_page_number }}}}" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                            <span class="sr-only">Next</span>
+                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                            </svg>
+                        </a>
+                        {{% endif %}}
+                    </nav>
+                </div>
+            </div>
+        </div>
+        {{% endif %}}
+    </div>
+</div>
+{{% endblock %}}
+"""
+        with open(os.path.join(template_dir, f"{app}_dashboard.html"), "w") as f:
+            f.write(list_html)
+
+if __name__ == "__main__":
+    enhance_templates()
+    print("Enhanced templates generated.")
