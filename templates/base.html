@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Personal Finance Management{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+    <nav class="bg-blue-800 p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center text-white">
+            <a class="font-bold text-xl" href="/">FinanceManager</a>
+            <div>
+                {% if user.is_authenticated %}
+                    <span class="mr-4">Welcome, {{ user.username }}</span>
+                    <a href="{% url 'dashboard' %}" class="hover:text-blue-200 mr-4">Dashboard</a>
+                    <a href="{% url 'logout' %}" class="hover:text-blue-200">Logout</a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-blue-200 mr-4">Login</a>
+                    <a href="{% url 'register' %}" class="hover:text-blue-200">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="container mx-auto mt-8 px-4 flex">
+        {% if user.is_authenticated %}
+        <aside class="w-64 bg-white rounded-lg shadow-md p-6 mr-6 hidden md:block h-screen sticky top-8">
+            <h2 class="text-xl font-bold mb-6 text-gray-800 border-b pb-2">Menu</h2>
+            <ul class="space-y-4">
+                <li><a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Dashboard</a></li>
+                <li><a href="{% url 'accounts:account-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Accounts</a></li>
+                <li><a href="{% url 'income:income-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Income</a></li>
+                <li><a href="{% url 'expenses:expense-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Expenses</a></li>
+                <li><a href="{% url 'transactions:transaction-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Transactions</a></li>
+                <li><a href="{% url 'budgets:budget-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Budgets</a></li>
+                <li><a href="{% url 'savings:savingsgoal-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Savings Goals</a></li>
+                <li><a href="{% url 'reports' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Reports</a></li>
+                <li><a href="{% url 'analytics' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Analytics</a></li>
+                <li><a href="{% url 'ml_insights' %}" class="text-gray-600 hover:text-blue-600 transition-colors">ML Insights</a></li>
+            </ul>
+        </aside>
+        {% endif %}
+        <main class="flex-1 bg-white p-6 rounded-lg shadow-md">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="p-4 mb-4 text-sm {% if message.tags == 'error' %}text-red-700 bg-red-100{% else %}text-green-700 bg-green-100{% endif %} rounded-lg" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
