@@ -76,3 +76,10 @@ python manage.py runserver
 - **Username**: `demo_user`
 - **Password**: `demo1234`
 - **Admin**: `admin` / `admin`
+
+## Install Steps
+
+To install dependencies, run: 
+
+pip install -r requirements.txt
+
