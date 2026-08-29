@@ -13,15 +13,18 @@
     <nav class="bg-blue-800 p-4 shadow-lg">
         <div class="container mx-auto flex justify-between items-center text-white">
             <a class="font-bold text-xl" href="/">FinanceManager</a>
-            <div>
+            <div class="flex items-center">
                 {% if user.is_authenticated %}
                     <span class="mr-4">Welcome, {{ user.username }}</span>
                     <a href="{% url 'dashboard' %}" class="hover:text-blue-200 mr-4">Dashboard</a>
-                    <a href="{% url 'logout' %}" class="hover:text-blue-200">Logout</a>
+                    <a href="{% url 'logout' %}" class="hover:text-blue-200 mr-4">Logout</a>
                 {% else %}
                     <a href="{% url 'login' %}" class="hover:text-blue-200 mr-4">Login</a>
-                    <a href="{% url 'register' %}" class="hover:text-blue-200">Register</a>
+                    <a href="{% url 'register' %}" class="hover:text-blue-200 mr-4">Register</a>
                 {% endif %}
+                <button onclick="document.body.classList.toggle('dark'); document.body.classList.toggle('bg-gray-900'); document.body.classList.toggle('text-white');" class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded shadow text-sm">
+                    Toggle Theme
+                </button>
             </div>
         </div>
     </nav>
@@ -38,7 +41,7 @@
                 <li><a href="{% url 'budgets:budget-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Budgets</a></li>
                 <li><a href="{% url 'savings:savingsgoal-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Savings Goals</a></li>
                 <li><a href="{% url 'reports' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Reports</a></li>
-                <li><a href="{% url 'analytics' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Analytics</a></li>
+                <li><a href="{% url 'analytics-dashboard' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Analytics</a></li>
                 <li><a href="{% url 'ml_insights' %}" class="text-gray-600 hover:text-blue-600 transition-colors">ML Insights</a></li>
             </ul>
         </aside>
