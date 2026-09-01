@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Personal Finance Management{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f3f4f6; }
     </style>
@@ -33,16 +34,16 @@
         <aside class="w-64 bg-white rounded-lg shadow-md p-6 mr-6 hidden md:block h-screen sticky top-8">
             <h2 class="text-xl font-bold mb-6 text-gray-800 border-b pb-2">Menu</h2>
             <ul class="space-y-4">
-                <li><a href="{% url 'dashboard' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Dashboard</a></li>
-                <li><a href="{% url 'accounts:account-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Accounts</a></li>
-                <li><a href="{% url 'income:income-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Income</a></li>
-                <li><a href="{% url 'expenses:expense-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Expenses</a></li>
-                <li><a href="{% url 'transactions:transaction-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Transactions</a></li>
-                <li><a href="{% url 'budgets:budget-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Budgets</a></li>
-                <li><a href="{% url 'savings:savingsgoal-list' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Savings Goals</a></li>
-                <li><a href="{% url 'reports' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Reports</a></li>
-                <li><a href="{% url 'analytics-dashboard' %}" class="text-gray-600 hover:text-blue-600 transition-colors">Analytics</a></li>
-                <li><a href="{% url 'ml_insights' %}" class="text-gray-600 hover:text-blue-600 transition-colors">ML Insights</a></li>
+                <li><a href="{% url 'dashboard' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-chart-pie w-6"></i> Dashboard</a></li>
+                <li><a href="{% url 'accounts:account-list' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-wallet w-6"></i> Accounts</a></li>
+                <li><a href="{% url 'income:income-list' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-arrow-trend-up w-6"></i> Income</a></li>
+                <li><a href="{% url 'expenses:expense-list' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-arrow-trend-down w-6"></i> Expenses</a></li>
+                <li><a href="{% url 'transactions:transaction-list' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-list w-6"></i> Transactions</a></li>
+                <li><a href="{% url 'budgets:budget-list' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-bullseye w-6"></i> Budgets</a></li>
+                <li><a href="{% url 'savings:savingsgoal-list' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-piggy-bank w-6"></i> Savings Goals</a></li>
+                <li><a href="{% url 'reports' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-file-invoice w-6"></i> Reports</a></li>
+                <li><a href="{% url 'analytics-dashboard' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-chart-line w-6"></i> Analytics</a></li>
+                <li><a href="{% url 'ml_insights' %}" class="flex items-center text-gray-600 hover:text-blue-600 transition-colors"><i class="fas fa-brain w-6"></i> ML Insights</a></li>
             </ul>
         </aside>
         {% endif %}
