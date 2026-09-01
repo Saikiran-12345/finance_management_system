@@ -57,7 +57,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     // Data parsing
-    const monthlyStats = {{ monthly_stats|safe }};
+    const monthlyStats = {{ monthly_stats_json|safe }};
     const labels = Object.keys(monthlyStats).sort();
     const incomeData = labels.map(l => monthlyStats[l].income);
     const expenseData = labels.map(l => monthlyStats[l].expense);
@@ -68,12 +68,12 @@
     });
     
     // Category Data
-    const catStats = {{ category_stats|safe }};
+    const catStats = {{ category_stats_json|safe }};
     const catLabels = catStats.map(c => c.category_name || 'Other');
     const catData = catStats.map(c => c.total);
     
     // Income Source Data
-    const incStats = {{ income_source_stats|safe }};
+    const incStats = {{ income_source_stats_json|safe }};
     const incLabels = incStats.map(c => c.category_name || 'Other');
     const incData = incStats.map(c => c.total);
 

@@ -31,17 +31,23 @@ class AnalyticsDashboardView(LoginRequiredMixin, TemplateView):
             elif t.transaction_type == 'EXPENSE':
                 monthly_stats[month_key]['expense'] += float(t.amount)
                 
-        context['monthly_stats'] = monthly_stats
+        import json
+        context['monthly_stats_json'] = json.dumps(monthly_stats)
         
         # 2. Expense by Category
         expenses = transactions.filter(transaction_type='EXPENSE')
-        cat_stats = expenses.values('category_name').annotate(total=Sum('amount')).order_by('-total')
-        context['category_stats'] = list(cat_stats)
+        cat_stats = list(expenses.values('category_name').annotate(total=Sum('amount')).order_by('-total'))
+        # Convert Decimals to float before json dumping
+        cat_stats_list = [{'category_name': c['category_name'], 'total': float(c['total'])} for c in cat_stats]
+        context['category_stats'] = cat_stats
+        context['category_stats_json'] = json.dumps(cat_stats_list)
         
         # 3. Income by Source
         incomes = transactions.filter(transaction_type='INCOME')
-        income_source_stats = incomes.values('category_name').annotate(total=Sum('amount')).order_by('-total')
-        context['income_source_stats'] = list(income_source_stats)
+        income_source_stats = list(incomes.values('category_name').annotate(total=Sum('amount')).order_by('-total'))
+        inc_stats_list = [{'category_name': c['category_name'], 'total': float(c['total'])} for c in income_source_stats]
+        context['income_source_stats'] = income_source_stats
+        context['income_source_stats_json'] = json.dumps(inc_stats_list)
         
         # Add more context variables...
         context['page_title'] = 'Advanced Analytics'
